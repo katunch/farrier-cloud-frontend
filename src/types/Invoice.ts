@@ -8,7 +8,7 @@ interface Invoice {
     items: OrderItem[];
     status: string;
     animal: Animal;
-    data_created: string;
+    date_created: string;
     total_price: number;
 }
 export default Invoice;

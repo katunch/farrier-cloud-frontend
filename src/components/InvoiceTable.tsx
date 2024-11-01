@@ -1,6 +1,7 @@
 import React from 'react';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import Invoice from '../types/Invoice';
+import moment from "moment";
 
 interface InvoiceTableProps {
   invoices: Invoice[];
@@ -15,6 +16,9 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices }) => {
             <tr>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 #
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Datum
               </th>
               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Tier
@@ -40,6 +44,11 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">
+                    {moment(invoice.date_created).format('DD.MM.YYYY')}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-medium text-gray-900">
                     {invoice.animal.name}
                   </div>
                 </td>
@@ -49,7 +58,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices }) => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{invoice.total_price}</div>
+                  <div className="text-sm text-gray-900">{invoice.total_price.toFixed(2)} CHF</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
