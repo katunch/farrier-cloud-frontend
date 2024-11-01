@@ -26,7 +26,7 @@ const Products = () => {
           onClick={() => console.log('Add new product')}
         >
           <PlusCircle className="mr-2 h-4 w-4" />
-          Add Customer
+          Add Product
         </button>
       </div>
       
