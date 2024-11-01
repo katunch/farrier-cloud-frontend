@@ -1,8 +1,20 @@
-import React from 'react';
+import {useEffect, useState} from 'react';
 import { PlusCircle } from 'lucide-react';
 import CustomerTable from '../components/CustomerTable';
+import Api from '../service/Api';
+import Customer from '../types/Customer';
 
 const Customers = () => {
+
+  const [customers, setCustomers] = useState<Customer[]>([]);
+
+  useEffect(() => {
+    Api.get('/customers').then((response: { data: Customer[] }) => {
+      console.log(`Customers loaded: ${response.data.length}`);
+      setCustomers(response.data);
+    });
+  }, []);
+  
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -20,7 +32,7 @@ const Customers = () => {
       </div>
       
       <div className="flex flex-col">
-        <CustomerTable />
+        <CustomerTable customers={customers}/>
       </div>
     </div>
   );
