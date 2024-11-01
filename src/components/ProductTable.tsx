@@ -1,14 +1,23 @@
 import React from 'react';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
-import { Product } from '../types/Product';
-
-
+import Product from '../types/Product';
 
 interface ProductTableProps {
   products: Product[];
+  onProductDeleted: (productId: number) => void;
+  onEditProduct: (product: Product) => void;
 }
 
-const ProductTable: React.FC<ProductTableProps>= ({ products }) => {
+const ProductTable: React.FC<ProductTableProps> = ({ 
+  products,
+  onProductDeleted,
+  onEditProduct
+}) => {
+  const formatPrice = (price: number | string): string => {
+    const numPrice = typeof price === 'string' ? parseFloat(price) : price;
+    return numPrice.toFixed(2);
+  };
+
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
       <div className="overflow-x-auto">
@@ -43,19 +52,19 @@ const ProductTable: React.FC<ProductTableProps>= ({ products }) => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{product.price} CHF</div>
+                  <div className="text-sm text-gray-900">{formatPrice(product.price)} CHF</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
                     <button
                       className="text-blue-600 hover:text-blue-900 p-1 rounded-full hover:bg-blue-50"
-                      onClick={() => console.log('Edit', product.id)}
+                      onClick={() => onEditProduct(product)}
                     >
                       <Pencil size={16} />
                     </button>
                     <button
                       className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-50"
-                      onClick={() => console.log('Delete', product.id)}
+                      onClick={() => onProductDeleted(product.id)}
                     >
                       <Trash2 size={16} />
                     </button>

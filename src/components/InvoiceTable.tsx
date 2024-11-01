@@ -1,13 +1,38 @@
 import React from 'react';
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Pencil, Trash2, FileText } from 'lucide-react';
 import Invoice from '../types/Invoice';
 import moment from "moment";
+import Api from '../service/Api';
 
 interface InvoiceTableProps {
   invoices: Invoice[];
 }
 
 const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices }) => {
+  const handleDownloadPDF = async (invoiceId: number) => {
+    try {
+      const response = await Api.get(`/invoices/generate/orders/${invoiceId}`, {
+        responseType: 'blob'
+      });
+      
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      
+      // Create temporary link and trigger download
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `invoice-${invoiceId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Cleanup
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading invoice:', error);
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg shadow overflow-hidden">
       <div className="overflow-x-auto">
@@ -62,6 +87,12 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices }) => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <div className="flex items-center justify-end space-x-2">
+                    <button
+                      className="text-green-600 hover:text-green-900 p-1 rounded-full hover:bg-green-50"
+                      onClick={() => handleDownloadPDF(invoice.id)}
+                    >
+                      <FileText size={16} />
+                    </button>
                     <button
                       className="text-blue-600 hover:text-blue-900 p-1 rounded-full hover:bg-blue-50"
                       onClick={() => console.log('Edit', invoice.id)}

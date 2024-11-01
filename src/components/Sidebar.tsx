@@ -12,7 +12,7 @@ import {
 const navItems = [
   { icon: <Home size={18} />, text: 'Home', path: '/' },
   { icon: <CircleUser size={18} />, text: 'Kunden', path: '/customers' },
-  { icon: <CircleUserRound size={18} />, text: 'Pferde', path: '/horses' },
+  { icon: <CircleUserRound size={18} />, text: 'Tiere', path: '/animals' },
   { icon: <ShoppingBag size={18} />, text: 'Produkte', path: '/products' },
   { icon: <FileText size={18} />, text: 'Rechnungen', path: '/invoices' },
 ];
