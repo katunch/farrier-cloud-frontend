@@ -1,15 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
-import { Customer } from '../types/Customer';
-
+import Customer from '../types/Customer';
+import ConfirmationModal from './ConfirmationModal';
+import Api from '../service/Api';
 
 
 interface CustomerTableProps {
   customers: Customer[];
+  onCustomerDeleted: (customerId: number) => void;
+  onEditCustomer: (customer: Customer) => void;
 }
 
-const CustomerTable: React.FC<CustomerTableProps>= ({ customers }) => {
+const CustomerTable: React.FC<CustomerTableProps>= ({ 
+  customers, 
+  onCustomerDeleted,
+  onEditCustomer 
+}) => {
+  const [deleteCustomerId, setDeleteCustomerId] = useState<number | null>(null);
+  const [customerToDelete, setCustomerToDelete] = useState<Customer | null>(null);
+
+  const handleDeleteClick = (customer: Customer) => {
+    setCustomerToDelete(customer);
+    setDeleteCustomerId(customer.id);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (deleteCustomerId) {
+      try {
+        await Api.delete(`/customers/${deleteCustomerId}`);
+        onCustomerDeleted(deleteCustomerId);
+      } catch (error) {
+        console.error('Error deleting customer:', error);
+      }
+    }
+  };
+
   return (
+    <>
     <div className="bg-white rounded-lg shadow overflow-hidden">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
@@ -52,13 +79,13 @@ const CustomerTable: React.FC<CustomerTableProps>= ({ customers }) => {
                   <div className="flex items-center justify-end space-x-2">
                     <button
                       className="text-blue-600 hover:text-blue-900 p-1 rounded-full hover:bg-blue-50"
-                      onClick={() => console.log('Edit', customer.id)}
+                      onClick={() => onEditCustomer(customer)}
                     >
                       <Pencil size={16} />
                     </button>
                     <button
                       className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-50"
-                      onClick={() => console.log('Delete', customer.id)}
+                      onClick={() => handleDeleteClick(customer)}
                     >
                       <Trash2 size={16} />
                     </button>
@@ -76,6 +103,14 @@ const CustomerTable: React.FC<CustomerTableProps>= ({ customers }) => {
         </table>
       </div>
     </div>
+          <ConfirmationModal
+          isOpen={deleteCustomerId !== null}
+          onClose={() => setDeleteCustomerId(null)}
+          onConfirm={handleDeleteConfirm}
+          title={"Delete "+customerToDelete?.firstName+" "+customerToDelete?.lastName}
+          message={"Are you sure you want to delete "+ customerToDelete?.firstName+" "+customerToDelete?.lastName +"?"}
+        />
+        </>
   );
 };
 
